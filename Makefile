@@ -4,4 +4,4 @@ FLAGS= -Wall -g -pedantic -lgmpxx -lgmp
 default: test
 
 test:
-	$(CC) $(FLAGS) factor.cc -o run
+	$(CC) factor.cc -o run $(FLAGS)
