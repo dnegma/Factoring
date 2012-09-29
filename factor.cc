@@ -9,7 +9,7 @@ using std::cout;
 using std::queue;
 using std::endl;
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 #define DEBUGPRINT(...)	gmp_printf( __VA_ARGS__)
@@ -38,20 +38,21 @@ mpz_class gcd(mpz_class a, mpz_class b) {
 }
 
 mpz_class pollard (mpz_class N) {
-	srand(time(NULL));
+	gmp_randseed_ui(state, time(NULL));
 	mpz_class x = random(N);
 	mpz_class y = x;
 	
-	int i = 1, k = 2;
+	int i = 1;
 	mpz_class a = 1;
+	mpz_class ab;
 	while (N >= 0) {
 			i++;
 			x = mod((x * x + 1), N);
 			y = mod((y * y + 1), N);
 			y = mod((y * y + 1), N);
-
-			a = a*(x - y);
-			DEBUGPRINT("x: %Zd a: %Zd y: %Zd\n", x.get_mpz_t(), a.get_mpz_t(), y.get_mpz_t());
+			DEBUGPRINT("preinit a ::: x: %Zd a: %Zd y: %Zd\n", x.get_mpz_t(), a.get_mpz_t(), y.get_mpz_t());
+			a = mod(a*(x - y), N);
+			if(a==0) a=2;
 			mpz_class d = gcd(N, abs(a));
 
 			DEBUGPRINT("N = %Zd\n", N.get_mpz_t());
@@ -85,6 +86,7 @@ void factor(mpz_class N) {
 		DEBUGPRINT("Ending factor...\n");
 		q.pop();
 	}
+	cout << endl;
 }
 
 int main () {
