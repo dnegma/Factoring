@@ -3,6 +3,7 @@
 #include <gmpxx.h>
 #include <cstdlib>
 #include <time.h>
+#include <vector>
 
 using std::cin;
 using std::cout;
@@ -17,7 +18,15 @@ using std::endl;
 #define DEBUGPRINT(...)
 #endif
 
+#define CUT_OFF_LIMIT 12500
+
 gmp_randstate_t state;
+
+/*
+Best version of this program gives us 39 points
+with CUT_OFF_LIMIT =12500
+and everything about the constant c out commented
+*/
 
 mpz_class mod(mpz_class a, mpz_class b) {
 	mpz_class ret;
@@ -37,19 +46,27 @@ mpz_class gcd(mpz_class a, mpz_class b) {
 	return gcd(b, a % b);
 }
 
+void print_vector(const std::vector<mpz_class>& v) {
+	for(int i = 0; i < v.size() ; i++){
+		std::cout << v[i] << "\n";
+	}
+}
+
 mpz_class pollard (mpz_class N) {
 	gmp_randseed_ui(state, time(NULL));
 	mpz_class x = random(N);
 	mpz_class y = x;
 	
 	int i = 1;
+	// int j = 0;
+	int c = 1;
 	mpz_class a = 1;
 	mpz_class ab;
 	while (N >= 0) {
-			i++;
-			x = mod((x * x + 1), N);
-			y = mod((y * y + 1), N);
-			y = mod((y * y + 1), N);
+
+			x = mod((x * x + c), N);
+			y = mod((y * y + c), N);
+			y = mod((y * y + c), N);
 			DEBUGPRINT("preinit a ::: x: %Zd a: %Zd y: %Zd\n", x.get_mpz_t(), a.get_mpz_t(), y.get_mpz_t());
 			a = mod(a*(x - y), N);
 			if(a==0) a=2;
@@ -59,6 +76,14 @@ mpz_class pollard (mpz_class N) {
 			DEBUGPRINT("gcd=%Zd d>1 && d<N -> %d\n", d.get_mpz_t(), (d > 1 && d < N));
 			if (d > 1 && d < N)
 				return d;
+
+			// if( j == 100){ 
+			// 	c++;
+			// 	j = 0;
+			// }
+			if(i >= CUT_OFF_LIMIT) break;
+			i++;
+			// j++;
 	}
 return 0;
 }
@@ -66,6 +91,8 @@ return 0;
 void factor(mpz_class N) {
 	queue<mpz_class> q;
 	q.push(N);
+	std::vector<mpz_class> v;
+	mpz_class factor=9;
 
 	while (!q.empty()) {
 		mpz_class value = q.front();
@@ -74,17 +101,26 @@ void factor(mpz_class N) {
 		DEBUGPRINT("Prime function returned %d\n", is_prime);
 
 		if (is_prime >= 1) {
-			cout << value << endl;
+			//cout << value << endl;
+			v.push_back(value);
 		} else {
-			mpz_class factor = pollard(value);
-			mpz_class factor2 = value / factor;
-			DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), 
-														factor2.get_mpz_t()	);
-			q.push(factor);
-			q.push(factor2);
+			factor = pollard(value);
+			if(factor == 0){
+				std::cout << "fail" << std::endl;
+				break;
+			}else{
+				DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), 
+															(value/factor).get_mpz_t()	);
+				q.push(factor);
+				q.push(value/factor);
+			}
 		}
 		DEBUGPRINT("Ending factor...\n");
 		q.pop();
+	}
+
+	if(factor!=0){
+		print_vector(v);
 	}
 	cout << endl;
 }
