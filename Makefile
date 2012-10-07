@@ -1,11 +1,14 @@
 CC=clang++
 FLAGS= -Wall -g -pedantic -lgmpxx -lgmp
 
-default: test
+default: quadratic
 
-test:
+pollard:
 	$(CC) pollard.cc -o pollard_run $(FLAGS)
 
+quadratic:
+	$(CC) quadratic.cc -o quadratic_run $(FLAGS)
+
 clean:
-	rm a.out *run
-	rm -r a.out* run*
+	rm -f a.out *run
+	rm -rf *dSYM
