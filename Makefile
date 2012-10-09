@@ -1,7 +1,7 @@
 CC=clang++
 FLAGS= -Wall -g -pedantic -lgmpxx -lgmp
 
-default: quadratic
+default: pollard
 
 pollard:
 	$(CC) pollard.cc -o pollard_run $(FLAGS)
