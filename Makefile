@@ -1,10 +1,10 @@
-CC=clang++
-FLAGS= -Wall -g -pedantic -lgmpxx -lgmp
+CC=g++
+FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg
 
 default: pollard
 
 pollard:
-	$(CC) pollard.cc -o pollard_run $(FLAGS)
+	$(CC) pollard_brent.cc -o pollard_run $(FLAGS)
 
 quadratic:
 	$(CC) quadratic.cc -o quadratic_run $(FLAGS)

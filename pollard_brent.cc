@@ -19,32 +19,14 @@ using std::endl;
 #define DEBUGPRINT(...)
 #endif
 
-#define CUT_OFF_LIMIT 12000
+#define CUT_OFF_LIMIT 10000
 
 gmp_randstate_t state;
-
-/*
-Best version of this program gives us 39 points
-with CUT_OFF_LIMIT =6500
-and everything about the constant c out commented
-*/
 
 mpz_class mod(mpz_class a, mpz_class b) {
 	mpz_class ret;
 	mpz_mod(ret.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
 	return ret;
-}
-
-mpz_class random(mpz_class N) {
-	mpz_class random;
-	mpz_urandomm(random.get_mpz_t(), state, N.get_mpz_t());
-	return random;
-}
-
-mpz_class gcd(mpz_class a, mpz_class b) {
-	if (b == 0)
-		return a;
-	return gcd(b, a % b);
 }
 
 void print_vector(const std::vector<mpz_class>& v) {
@@ -53,9 +35,25 @@ void print_vector(const std::vector<mpz_class>& v) {
 	}
 }
 
+mpz_class gcd(mpz_class a, mpz_class b) {
+	if (b == 0)
+		return a;
+	return gcd(b, a % b);
+}
+
+bool is_power (int i) {
+	int pow = 1;
+	while (pow <= i) {
+		if (pow == i)
+			return true;
+		pow = pow * 2;
+	}
+	return false;
+}
 mpz_class brent(mpz_class N){
 	gmp_randseed_ui(state, time(NULL));
-	mpz_class power_two = 1, lap_number = 1;
+	mpz_class power_two = 1;
+	int lap_number = 1;
 	mpz_class xi = 2; //random(N);
 	mpz_class xm = 2;
 
@@ -64,16 +62,15 @@ mpz_class brent(mpz_class N){
 
 	while (true){
 		xi = mod((xi * xi + c), N);
-		mpz_class d = gcd(N, xi - xm);
+		mpz_class a = xi-xm;
+		mpz_class d = gcd(N, abs(a));
+		DEBUGPRINT("N = %Zd, xi = %Zd, xm = %Zd, d = %Zd, c = %d\n", N.get_mpz_t(), xi.get_mpz_t(), xm.get_mpz_t(), d.get_mpz_t(), c);
 
 		if (d > 1 && d < N)
 			return d;
 
-		if(power_two == lap_number){
+		if(is_power(lap_number)){
 			xm = xi;
-			power_two *= 2;
-			lap_number = 0;
-			c++;
 		}
 
 		lap_number +=1;
@@ -82,42 +79,6 @@ mpz_class brent(mpz_class N){
 	}
 
 	return 0;
-}
-
-mpz_class pollard (mpz_class N) {
-	gmp_randseed_ui(state, time(NULL));
-	mpz_class x = random(N);
-	mpz_class y = x;
-	
-	int i = 1;
-	// int j = 0;
-	int c = 1;
-	mpz_class a = 1;
-	mpz_class ab;
-	while (N >= 0) {
-
-			x = mod((x * y + c), N);
-			y = mod((y * y + c), N);
-			y = mod((y * y + c), N);
-			DEBUGPRINT("preinit a ::: x: %Zd a: %Zd y: %Zd\n", x.get_mpz_t(), a.get_mpz_t(), y.get_mpz_t());
-			a = mod(a*(x - y), N);
-			if(a==0) a=2;
-			mpz_class d = gcd(N, abs(a));
-
-			DEBUGPRINT("N = %Zd\n", N.get_mpz_t());
-			DEBUGPRINT("gcd=%Zd d>1 && d<N -> %d\n", d.get_mpz_t(), (d > 1 && d < N));
-			if (d > 1 && d < N)
-				return d;
-
-			// if( j == 100){ 
-			// 	c++;
-			// 	j = 0;
-			// }
-			if(i >= CUT_OFF_LIMIT) break;
-			i++;
-			// j++;
-	}
-return 0;
 }
 
 void factor(mpz_class N) {
@@ -136,17 +97,13 @@ void factor(mpz_class N) {
 		DEBUGPRINT("Prime function returned %d\n", is_prime);
 
 		if (is_prime >= 1) {
-			//cout << value << endl;
 			v.push_back(value);
 		} else {
-			// factor = pollard(value);
-			factor = pollard(value);
+			factor = brent(value);
 			if(factor == 0){
-				std::cout << "fail" << std::endl;
+				cout << "fail" << "\n";
 				break;
 			}else{
-				// DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), 
-				// 											(value/factor).get_mpz_t()	);
 				q.push(factor);
 				q.push(value/factor);
 			}
@@ -175,3 +132,4 @@ int main () {
 
 	return 0;
 }
+
