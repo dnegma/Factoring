@@ -1,4 +1,14 @@
+UNAME := $(shell uname)
+
 CC=g++
+ifeq ($(UNAME), Darwin)
+CC=clang++
+endif
+ifeq ($(UNAME), Linux)
+CC=g++
+endif
+
+
 FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg
 
 default: pollard
