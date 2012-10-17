@@ -11,9 +11,12 @@ endif
 
 FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg
 
-default: pollard
+default: pollard_brent
 
 pollard:
+	$(CC) pollard.cc -o pollard_run $(FLAGS)
+
+pollard_brent:
 	$(CC) pollard_brent.cc -o pollard_run $(FLAGS)
 
 quadratic:
