@@ -9,7 +9,7 @@ CC=g++
 endif
 
 
-FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg
+FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg -Wno-variadic-macros
 
 default: pollard_brent
 
