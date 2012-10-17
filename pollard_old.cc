@@ -47,7 +47,7 @@ mpz_class gcd(mpz_class a, mpz_class b) {
 }
  
 void print_vector(const std::vector<mpz_class>& v) {
-	for(int i = 0; i < v.size() ; i++){
+	for(size_t i = 0; i < v.size() ; i++){
 		std::cout << v[i] << "\n";
 	}
 }
