@@ -13,6 +13,9 @@ FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg
 
 default: pollard_brent
 
+pollard_old:
+	$(CC) pollard_old.cc -o pollard_run $(FLAGS)
+
 pollard:
 	$(CC) pollard.cc -o pollard_run $(FLAGS)
 

@@ -1,3 +1,11 @@
+WAIT_FOR_INPUT=false
+ARGV.each do |a|
+	case a
+	when "wait", "w"
+		WAIT_FOR_INPUT = true
+	end
+end
+
 test = Array.new
 input = ""
 i = 0
@@ -13,12 +21,21 @@ IO.popen("./pollard_run", mode="w+"){|p_io|
 		
 		while input != "\n" do
 			input = p_io.readline
-			if input.eql? "fail\n"
+			if input.match(/^#/)
+				# Do nothing
+			elsif input.eql? "fail\n"
 				i+=1
 			end
 			print input
 		end
 		
+		if WAIT_FOR_INPUT
+			puts "continue(y/n)"
+			if 'n' == $stdin.gets.chomp 
+				exit 
+			end
+		end
+
 		input = ""
 	}
 

@@ -5,6 +5,8 @@
 #include <time.h>
 #include <vector>
 
+#define DEBUG 1
+#include "debug_inc.h"
 
 /*
 This is the version where we got most points(39)
@@ -15,14 +17,6 @@ using std::cin;
 using std::cout;
 using std::queue;
 using std::endl;
- 
-#define DEBUG 0
- 
-#if DEBUG
-#define DEBUGPRINT(...) gmp_printf( __VA_ARGS__)
-#else
-#define DEBUGPRINT(...)
-#endif
  
 #define CUT_OFF_LIMIT 12500
  
@@ -47,7 +41,7 @@ mpz_class gcd(mpz_class a, mpz_class b) {
 }
  
 void print_vector(const std::vector<mpz_class>& v) {
-	for(int i = 0; i < v.size() ; i++){
+	for(size_t i = 0; i < v.size() ; i++){
 		std::cout << v[i] << "\n";
 	}
 }
@@ -102,7 +96,7 @@ void factor(mpz_class N) {
 				std::cout << "fail" << std::endl;
 				break;
 			}else{
-				DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), (value/factor).get_mpz_t);
+				// DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), (value/factor).get_mpz_t);
 						q.push(factor);
 						q.push(value/factor);
 			}
