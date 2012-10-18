@@ -25,7 +25,8 @@ using std::endl;
 #define DEBUGPRINT(...)
 #endif
  
-#define CUT_OFF_LIMIT 2000
+#define CUT_OFF_LIMIT 60000
+// kattis approves 6000
  
 gmp_randstate_t state;
  
@@ -83,27 +84,25 @@ timer t;
 mpz_class pollard(mpz_class N){
 	if (mod(N,2) == 0) return 2;
 	gmp_randseed_ui(state, time(NULL));
-	mpz_class y,m,c;
-	m = random(N);
+	mpz_class y,m,c,k,i;
+	mpz_sqrt(m.get_mpz_t(), N.get_mpz_t());
 	c = random(N);
 	y = random(N);
-	mpz_class g=1, r=1, q=1;
-	mpz_class x, ys;
-
-	
+	mpz_class g=1, power_two=1, q=1;
+	mpz_class x, ys, min_v;
 
 	while (g == 1){
 		x = y;
-		for(mpz_class i =0 ; i <= r ; ++i){
+		for(i =0 ; i <= power_two ; ++i){
 			y = mod((y*y+c),N);
 		}
-		mpz_class k = 0;
-		while (k<r && g==1){
+		k = 0;
+		while (k<power_two && g==1){
 			ys = y;
-			mpz_class min_v = min(m,r-k);
-			for(mpz_class j = 0 ; j <= min_v ; ++j){
+			min_v = min(m, power_two - k);
+			for(i= 0 ; i <= min_v ; ++i){
 				y =mod((mod(y*y,N)+c),N);
-				q = q*mod((abs(x-y)),N);
+				q = mod(q*(abs(x-y)),N);
 				if(t.should_break()) return 0;
 				t++;
 			}
@@ -112,7 +111,7 @@ mpz_class pollard(mpz_class N){
 
 			// cout << "t1: "<<  t.time << " ";
 		}
-		r = r*2;
+		power_two = power_two*2;
 
 	}
 	if(g==N){
@@ -156,8 +155,8 @@ void factor(mpz_class N) {
 			//cout << value << endl;
 			v.push_back(value);
 		} else {
-			cout << "Factoring value = " << value << "\n";
-			factor = (value > 10) ? pollard(value) : brute_force(value);
+			// cout << "Factoring value = " << value << "\n";
+			factor = (value > 2) ? pollard(value) : brute_force(value);
 			if(factor == 0){
 				std::cout << "fail" << std::endl;
 				// print_vector(v);
