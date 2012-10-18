@@ -17,7 +17,7 @@ using std::cout;
 using std::queue;
 using std::endl;
  
-#define DEBUG 1
+#define DEBUG 0
  
 #if DEBUG
 #define DEBUGPRINT(...) gmp_printf( __VA_ARGS__)
@@ -25,7 +25,7 @@ using std::endl;
 #define DEBUGPRINT(...)
 #endif
  
-#define CUT_OFF_LIMIT 50
+#define CUT_OFF_LIMIT 2000
  
 gmp_randstate_t state;
  
@@ -62,49 +62,79 @@ bool is_power (int  i) {
 	}
 	return false;
 }
- 
-mpz_class pollard (mpz_class N) {
-	gmp_randseed_ui(state, time(NULL));
-	mpz_class x = random(N);
-	mpz_class y = x;
-	
-	int lap_number = 1;
-	int i = 1;
-	int c = 1;
-	mpz_class a = 2;
-	mpz_class d;
-	while (N >= 0) {
- 
-			x = mod((x * x + c), N);
-			y = mod((y * y + c), N);
-			y = mod((y * y + c), N);
-			DEBUGPRINT("preinit a ::: x: %Zd a: %Zd y: %Zd\n", x.get_mpz_t(), a.get_mpz_t(), y.get_mpz_t());
-			
-			if ((x - y) != 0){
-				a = (a == 0) ? 2 : a;
-				for (int i = 0; i < 10; i++){
-					a = mod(a*(x - y), N);
-				}
-				d = gcd(N, abs(a));
- 			}
 
-			DEBUGPRINT("N = %Zd\n", N.get_mpz_t());
-			DEBUGPRINT("gcd=%Zd d>1 && d<N -> %d\n", d.get_mpz_t(), (d > 1 && d < N));
-			if (d > 1 && d < N)
-				return d;
- 
-			if (is_power (lap_number))
-				c++;
-			if(i >= CUT_OFF_LIMIT) break;
-			i++;
+mpz_class min(mpz_class a, mpz_class b){
+	if(a<b){
+		return a;
 	}
-return 0;
+	return b;
 }
+
+struct timer{
+	int time;
+	bool should_break(){return time >= CUT_OFF_LIMIT;}
+	timer operator++(int){
+		time++;
+		return *this;
+	}
+};
+timer t;
+
+mpz_class pollard(mpz_class N){
+	if (mod(N,2) == 0) return 2;
+	gmp_randseed_ui(state, time(NULL));
+	mpz_class y,m,c;
+	m = random(N);
+	c = random(N);
+	y = random(N);
+	mpz_class g=1, r=1, q=1;
+	mpz_class x, ys;
+
+	
+
+	while (g == 1){
+		x = y;
+		for(mpz_class i =0 ; i <= r ; ++i){
+			y = mod((y*y+c),N);
+		}
+		mpz_class k = 0;
+		while (k<r && g==1){
+			ys = y;
+			mpz_class min_v = min(m,r-k);
+			for(mpz_class j = 0 ; j <= min_v ; ++j){
+				y =mod((mod(y*y,N)+c),N);
+				q = q*mod((abs(x-y)),N);
+				if(t.should_break()) return 0;
+				t++;
+			}
+			g = gcd(q,N);
+			k = k+m;
+
+			// cout << "t1: "<<  t.time << " ";
+		}
+		r = r*2;
+
+	}
+	if(g==N){
+		while (true){
+			ys = mod(mod(ys*ys, N)+c, N);
+			g = gcd(abs(x-ys), N);
+			if (g>1) break;
+			if(t.should_break()) return 0;
+			t++;
+			// cout << "t2: "<<  t.time << " ";
+		}
+	}
+	return g;
+}
+
 mpz_class brute_force(mpz_class N) {
+	if(N == 1) return 0;
+	if(mod(N,2) == 0){return 2;}
  	long int n = mpz_get_ui(N.get_mpz_t());
 	double root = ceil(sqrt(n));
 //	cout << "N = " << N.get_mpz_t() << "n = " << n << " Root = " << root << "\n";
-	for (int i = 2; i <= root; i++){
+	for (int i = 3; i <= root; i++){
 		if (n % i == 0)
 			return i;
 	}
@@ -127,15 +157,17 @@ void factor(mpz_class N) {
 			v.push_back(value);
 		} else {
 			cout << "Factoring value = " << value << "\n";
-			factor = (value > 100) ? pollard(value) : brute_force(value);
+			factor = (value > 10) ? pollard(value) : brute_force(value);
 			if(factor == 0){
 				std::cout << "fail" << std::endl;
-				print_vector(v);
+				// print_vector(v);
 				break;
 			}else{
 				//DEBUGPRINT("Found factor 1: %Zd 2: %Zd\n",factor.get_mpz_t(), (value/factor).get_mpz_t());
-						q.push(factor);
-						q.push(value/factor);
+				if(value != 1 || value != N){
+					q.push(factor);
+					q.push(value/factor);
+				}
 			}
 		}
 		DEBUGPRINT("Ending factor...\n");
@@ -157,8 +189,10 @@ int main () {
 	gmp_randinit_default(state);
 	mpz_class N;
 	DEBUGPRINT("Waiting for input...\n");
-	while (std::cin >> N)
+	while (std::cin >> N){
+		t.time = 0;
 		factor(N);
+	}
  
 	return 0;
 }
