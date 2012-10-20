@@ -13,6 +13,9 @@ FLAGS= -Wall -g -pedantic -lgmpxx -lgmp -pg -Wno-variadic-macros
 
 default: pollard_brent
 
+pollard_new:
+	$(CC) pollard_new.cc -o pollard_run $(FLAGS)
+
 pollard_old:
 	$(CC) pollard_old.cc -o pollard_run $(FLAGS)
 
