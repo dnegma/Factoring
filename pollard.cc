@@ -110,7 +110,12 @@ void factor(mpz_class N) {
 			//cout << value << endl;
 			v.push_back(value);
 		} else {
+<<<<<<< Updated upstream
 			factor = (value > 100) ? pollard(value) : brute_force(value);
+=======
+			factor = pollard(value);
+			// factor = brent(value);
+>>>>>>> Stashed changes
 			if(factor == 0){
 				std::cout << "fail" << std::endl;
 				break;
