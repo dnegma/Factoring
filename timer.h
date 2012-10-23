@@ -2,10 +2,18 @@
 #define CUT_OFF_LIMIT_UPPER 1000
 #define CUT_OFF_LIMIT_LOWER 20
 
-struct timer{
-	
+class timer{
+	public:
 	clock_t times;
 	clock_t limit;
+
+	timer(int t):limit(t){
+		times = clock();
+	}
+
+	timer(){
+		times = clock();
+	}
 
 	double diffclock(clock_t clock1,clock_t clock2){
 		clock_t diffticks = clock1 - clock2;
@@ -19,21 +27,28 @@ struct timer{
 		limit = l;
 	}
 
-	timer(int t):limit(t){
+	void reset(){
 		times = clock();
 	}
 
-	timer(){
-		times = clock();
-	}
-
-	bool should_break(clock_t val2){
-		clock_t ret = diffclock(val2,times);
-		// times = val2;
-		// std::cout << ret << " " << (limit) << std::endl;
+	bool should_break(){
+		clock_t ret = diffclock(clock(),times);
 		return ret >= limit;
 	}
 
+	/*DEPRECATED REMOVE WHEN NOT USED ANYMORE*/
+	bool should_break(clock_t val2){
+		clock_t ret = diffclock(clock(),times);
+		return ret >= limit;
+	}
+
+	clock_t time_taken_in_ms(){
+		clock_t ret = diffclock(clock(),times);
+		std::cout << "It took " << ret << std::endl;
+		return ret;
+	}
+
+	/*DEPRECATED REMOVE WHEN NOT USED ANYMORE*/
 	clock_t time_taken_in_ms(clock_t val2){
 		clock_t ret = diffclock(clock(),times);
 		std::cout << "It took " << ret << std::endl;
