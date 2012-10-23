@@ -1,0 +1,8 @@
+*~
+factor
+*run*
+*.out
+rho*
+*.aux
+*.log
+*.toc

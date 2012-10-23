@@ -8,8 +8,8 @@ struct timer{
 	clock_t limit;
 
 	double diffclock(clock_t clock1,clock_t clock2){
-		clock_t diffticks=clock1-clock2;
-		// std::cout <<"Diff: "<< diffticks << " CLOCKS_PER_SEC: "<< CLOCKS_PER_SEC <<std::endl;
+		clock_t diffticks = clock1 - clock2;
+		//std::cout <<"Diff: "<< diffticks << " CLOCKS_PER_SEC: "<< CLOCKS_PER_SEC <<std::endl;
 		double diffms=(double)(diffticks*1000)/CLOCKS_PER_SEC;
 		return diffms;
 	}
@@ -35,7 +35,7 @@ struct timer{
 	}
 
 	clock_t time_taken_in_ms(clock_t val2){
-		clock_t ret = t.diffclock(clock(),t.times)
+		clock_t ret = diffclock(clock(),times);
 		std::cout << "It took " << ret << std::endl;
 		return ret;
 	}
