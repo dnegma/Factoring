@@ -22,7 +22,7 @@ struct timer{
 	timer(int t):limit(t){
 		times = clock();
 	}
-	
+
 	timer(){
 		times = clock();
 	}
@@ -34,10 +34,9 @@ struct timer{
 		return ret >= limit;
 	}
 
-	clock_t breaked_at(clock_t val2){
-		clock_t ret = val2- times;
-		// times = val2;
-		// std::cout << ret << " " << (times) << std::endl;
+	clock_t time_taken_in_ms(clock_t val2){
+		clock_t ret = t.diffclock(clock(),t.times)
+		std::cout << "It took " << ret << std::endl;
 		return ret;
 	}
 };
