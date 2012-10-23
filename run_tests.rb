@@ -1,8 +1,11 @@
 WAIT_FOR_INPUT=false
+REMOVE_END = false
 ARGV.each do |a|
 	case a
 	when "wait", "w"
 		WAIT_FOR_INPUT = true
+	when "only_numbers", "n"
+		REMOVE_END = true
 	end
 end
 
@@ -38,6 +41,7 @@ IO.popen("./pollard_run", mode="w+"){|p_io|
 
 		input = ""
 	}
-
-	print "failed ", i , " tests off ",j ," cases\n"
+	if(!REMOVE_END)
+		print "failed ", i , " tests off ",j ," cases\n"
+	end
 }

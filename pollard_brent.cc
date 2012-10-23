@@ -11,7 +11,7 @@ using std::cout;
 using std::queue;
 using std::endl;
  
-#define DEBUG 1
+#define DEBUG 0
  
 #if DEBUG
 #define DEBUGPRINT(...) gmp_printf( __VA_ARGS__)
@@ -94,8 +94,7 @@ mpz_class pollard(mpz_class N){
 			for(i= 0 ; i <= min_v ; ++i){
 				y =mod(y*y + c,N);
 				q = mod(q*(abs(x-y)),N);
-				// if(t.should_break()) return 0;
-				// t++;
+
 				if(t.should_break(clock())) {
 					// std::cout << "time out "<< (clock()-t.times) << "\n";
 					return 0;
@@ -104,7 +103,6 @@ mpz_class pollard(mpz_class N){
 			g = gcd(q,N);
 			k = k+1;
 
-			// cout << "t1: "<<  t.time << " ";
 		}
 		power_two = power_two*2;
 
@@ -115,12 +113,8 @@ mpz_class pollard(mpz_class N){
 			g = gcd(abs(x-ys), N);
 			if (g>1) break;
 			if(t.should_break(clock())) {
-					// std::cout << "time out "<< (clock()-t.times) << "\n";
 					return 0;
 				}
-			// if(t.should_break()) return 0;
-			// t++;
-			// cout << "t2: "<<  t.time << " ";
 		}
 	}
 	return g;
@@ -195,11 +189,12 @@ int main () {
 		t.times = clock();
 		mpz_class n;
 		mpz_root(n.get_mpz_t(), N.get_mpz_t(),4);
-		long long int limit = mpz_get_ui(n.get_mpz_t());
+		clock_t limit = mpz_get_ui(n.get_mpz_t());
 		DEBUGPRINT("sqrt N = %lld\n", limit);
  		t.set_limit(limit);
 
 		factor(N);
+		// DEBUGPRINT("Finished at %uld\n",t.breaked_at(clock()));
 		// cout << "It took " << (clock()-t.times) << " to factor " << N << endl;
 		// cout <<"Time limit = " << t.limit << endl; 
 	}

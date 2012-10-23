@@ -28,6 +28,13 @@ pollard_brent:
 quadratic:
 	$(CC) quadratic.cc -o quadratic_run $(FLAGS)
 
+test_output:
+	$(CC) test_output.cc -o test_output.out $(FLAGS)
+
+test: pollard_brent test_output
+	ruby run_tests.rb n > test_output.txt
+	./test_output.out
+
 clean:
-	rm -f a.out *run
+	rm -f *out *run
 	rm -rf *dSYM
