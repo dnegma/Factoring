@@ -22,6 +22,10 @@ struct timer{
 	timer(int t):limit(t){
 		times = clock();
 	}
+	
+	timer(){
+		times = clock();
+	}
 
 	bool should_break(clock_t val2){
 		clock_t ret = diffclock(val2,times);
