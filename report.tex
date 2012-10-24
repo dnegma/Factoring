@@ -95,31 +95,6 @@ We quickly realized that we needed the program to stop looking for factors if it
 
 The scores could be improved just by increasing the cut off limit so that the program would run for as close to 15 seconds as possible, since it obviously had time to evaluate more numbers.
 
-\begin{lstlisting}[frame=single] 
-f(z, N)
-	return z*z % N
-function pollard(N) 
-	x := random(N) 
-	y := x 	
-	prod := 1
-
-	for i := 1 to infinity do
-		x = f(x, N)
-		y = f(f(y, N), N)
-
-		if (x - y = 0) then
-			prod = prod *(x-y) % N
-			d := gcd(N, prod)
-
-		if d > 1 and d < N then
-			return d
-
-		if i >= CUT_OFF_LIMIT then
-			return 0
-	end for
-end function
-\end{lstlisting}
-
 \subsection{Optimizations}
 We recognized that since there is a 50/50 chance that the given number is even, it could be a good idea to check that before running the algorithm, and thereby eliminate calculation time. So we started off by introducing a check for even numbers, and just return true if the condition was satisfied.
 
@@ -188,8 +163,34 @@ The Birthday Problem concerns the probability that some pair in a set of $n$ ran
 
 \chapter{Code}
 \section{Pollard $\rho$}
+\begin{lstlisting}[frame=single] 
+f(z, N)
+	return z*z % N
+function pollard(N) 
+	x := random(N) 
+	y := x 	
+	prod := 1
+
+	for i := 1 to infinity do
+		x = f(x, N)
+		y = f(f(y, N), N)
+
+		if (x - y = 0) then
+			prod = prod *(x-y) % N
+			d := gcd(N, prod)
+
+		if d > 1 and d < N then
+			return d
+
+		if i >= CUT_OFF_LIMIT then
+			return 0
+	end for
+end function
+\end{lstlisting}
+
+\section{Pollard $\rho$ with Brent}
 % This looks horrible... must fix in some way
-\begin{lstlisting}
+\begin{lstlisting}[frame=single]
 f(z, N)
    return z*z % N
 function pollard_breant(N)
