@@ -106,7 +106,7 @@ $a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19, a_9=7, a_10=2 ...$
 Where a is the value to be investigated with GCD. This sequence will go nowhere and we will have to abort this run.
 
 \subsection{Implementation}
-Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for a sequence S, where S is built upon iterated functions. We can find a loop of length $\lambda$ in given
+Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for a sequence S, where S is built upon iterated functions. An important insight is that for integers $i ≥ μ$ and $k ≥ 0, x_i = x_{i + kλ}$, where λ is the length of the loop. Especially when $i = kλ >= μ$, it follows that $x_i = x_{2i}$.
 
 \begin{lstlisting}
 f(z, N)
