@@ -55,7 +55,10 @@ etc. Do the same step, increasing $x$ by one, until a square number $ \Delta x $
 Fermat's factorization method works well when the resulting factors ara of similar size. If that is not the case, this method is not optimal. However, the method sets base for more advance and better performing algorithms such as the \emph{quadratic sieve} and \emph{general number field sieve}
 
 \subsection{Pollard Rho}
-Pollard Rho is a fairly easy algorithm to both understand and implement, and it has an acceptable performance. The algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
+The Pollard Rho algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
+
+\subsubsection{Method}
+\subsubsection{Performance}
 
 
 \chapter{Approach}
@@ -117,7 +120,7 @@ Cut off limit 	&	 Score 	& Time [s] \\ \hline
 \end{tabular}
 \chapter{Conclusion}
 \appendix
-\chapter{Algorithms}
+\chapter{Proofs}
 \section{Fermat Difference of Squares}
 \label{sec:fermatproof}
 \begin{description}
@@ -132,4 +135,24 @@ Let $ a = \frac{1}{2} (m_2 + m_1) $ and $ b = \frac{1}{2} (m_2 - m_1) $. Since b
 This gives us $m_1 = a - b$ and $m_2 = a + b $, hence $N = m_1m_2 = (a - b)(a + b) = a^2 - b^2$.
 
 \end{description}
+
+\begin{thebibliography} {10}
+\bibitem{wolfram}
+	WolframMathWorld.
+	\emph{Fermat's Factorization Method} \\
+	http://mathworld.wolfram.com/FermatsFactorizationMethod.html \\
+	Retreived: Oct 2012
+	
+\bibitem{mathdep}
+	Department of Mathematics, Kansas State University.
+	\emph{Factoring Methods} \\
+	http://www.math.ksu.edu/math511/notes/925.html \\
+	Retreived: Oct 2012
+	
+\bibitem{mathdep}
+	Math \& Statistics Solutions.
+	\emph{Fermat's Factoring Technique} \\
+	http://mathsolutions.50webs.com/fermat.html \\
+	Retreived: Oct 2012
+\end{thebibliography}
 \end{document}
