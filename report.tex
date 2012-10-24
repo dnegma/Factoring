@@ -23,7 +23,7 @@ As mentioned above, there are some algorithms that solve the problem, of which t
 \subsubsection{Method}
 The most straight forward way of solving this problem is of course to divide a given number \emph{N} with each prime number up to $ \sqrt{N} $. If we find a prime $x$ such that
 \begin{equation}
-x \equiv 0 \pmod b
+N \equiv 0 \pmod x
 \end{equation}
 we have found two factors. The first factor being $x$ and the second being $ \frac{N}{x} $.
 
@@ -32,7 +32,7 @@ Trial division is not an ideal approach as it is a heavy algortihm \cite{trial}.
 
 \subsection{Fermat's Factorization Method}
 \subsubsection{Method}
-A simple way of improving the naive method is to use the fact that every odd number number $N$ can be represented as a difference of squares (proof in section \ref{sec:fermatproof}.
+A simple way of improving the trial division method is to use the fact that every odd number number $N$ can be represented as a difference of squares (section \ref{sec:fermatproof}).
 \begin{equation}
 N = a^2 - b^2
 \end{equation}
@@ -58,16 +58,18 @@ Fermat's factorization method works well when the resulting factors are of simil
 The Pollard Rho algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
 
 \subsubsection{Method}
-The idea with the Pollard Rho method is to iterate over the ring $mod(N)$ until falling into a cycle. If $N = pq$, where $q$ and $q$ are two prime factors, we can produce a sequence if numbers that eventually fall into a cycle by iterating a polynomial formula \cite{pollard}. \\
+The idea with the Pollard Rho method is to iterate over the ring $mod(N)$ until falling into a cycle. If $N = pq$, where $p$ and $q$ are two prime factors, we can produce a sequence of numbers that eventually fall into a cycle by iterating a polynomial formula \cite{pollard}. \\
 Ex 
 \begin{equation}
-x_{n+1} = (x_n^2 + a) \bmod n
+x_{n+1} = (x_n^2 + a) \bmod N
 \end{equation} \\
-According to the \emph{Chinese remainder theorem} (section \ref{sec:chinese}), we know that each value of $x \bmod n$ corresponds to a value in the pair $x \bmod p$ and $x \bmod q$, since $p$ and $q$ are primes, hence also relatively prime. 
+According to the \emph{Chinese remainder theorem} (section \ref{sec:chinese}), we know that each value of $x \bmod n$ corresponds to a value in the pair ($x \bmod p$) and ($x \bmod q$), since $p$ and $q$ are primes, and thereby also relatively prime. 
 \\
-This leads to the sequence of numbers $x_n$:s follows the same formula modulo $p$ and $q$:
+This leads to the sequence of numbers $x_n$:s following the same formula modulo $p$ and $q$:
 \begin{equation}
 	x_{n+1} = ((x_n \bmod p)^2 + a) \bmod p
+\end{equation}
+\begin{equation}
 	x_{n+1} = ((x_n \bmod q)^2 + a) \bmod q
 \end{equation}
 
@@ -84,16 +86,20 @@ The algorithm is based on the Birthday Problem (section \ref{sec:birthday}) and 
 \subsection{Pollard Rho with Brent}
 Brent published this improvement in 1980\cite{brentpdf} and it bases itself on improving cycle finding.
 \subsubsection{Method}
-Pollard-Rho is a great algorithm but it suffers from one flaw. It can't handle a cyclic behaviour. With a cyclic behaviour i mean the function f produces repeated results. We can take an example from our own pollard-rho function. When we tried to factor 25 we got this sequence:
+Pollard-Rho is a great algorithm but it suffers from one flaw. It cannot handle a cyclic behaviour. With a cyclic behaviour i mean the function $f$ producing repeated results. We can look at an example from our own pollard-rho function. When we tried to factor 25 we got this sequence:
 \begin{center}
 $a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19...$
 \end{center}
-Where a is the value to be investigated with GCD. This sequence will go nowhere and we will have to abort this run.
+Where a is the value to be investigated with GCD. This sequence will result in nothing and we will have to abort this run.
 
-Cycle finding can be implemented with either Floyds "tortoise and hare algorithm" or with Brents version of Floyd. We start by discussing Floyds algorithm. This algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ is divisable with $\lambda$. Which is what we are searching for. Brent realised that if we looked at the comming $2^i$ following numbers after $x_{2^i-1}$ would find the correct cycle length faster. Although it does not differ much for finding factors Brents algorithm finds the correct cycle length directly instead of having to search again like in Floyds. It also has to evaluate the function f one less time.
+Cycle finding can be implemented with either Floyd's "tortoise and hare algorithm" or with Brent's improved version of Floyd. We start by discussing Floyds algorithm. 
+
+Floyd's algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. From this fact, we can find a length $v$ by letting one value take one step and the other take two steps. The value $v$ is divisable with $\lambda$, which is what we are searching for. 
+
+Brent realized, however, that if we look at the $2^i$ following numbers after $x_{2^i-1}$, we will find the correct cycle length faster. Although it does not differ much from Floyd's algorithm for finding factors, Brent's algorithm finds the correct cycle length directly instead of having to search again. It also has to evaluate the function $f$ one less time.
 
 \subsubsection{Performance}
-This algorithm as said before builds upon floyds. Floyds have a worst case of $O(\lambda + \mu)$. According to Brent his code would work 36\% percent faster for general cycle finding and 24\% for factorisation problems.
+This algorithm as said before builds upon Floyd's algorithm. Floyd's has a worst case of $O(\lambda + \mu)$. According to Brent his code would work 36\% faster for general cycle finding and 24\% for factorization problems.
 
 \chapter{Approach}
 We decided to do the programming in C++. We both had limited knowledge in the language and wanted to learn more, as well as handling I/O for Kattis felt like a much easier task in C++ than in Java. 
@@ -119,7 +125,7 @@ After reading more on Pollard Rho, we found that finding the greatest common div
 When working on this we realised we could not use the old way of cutting the program as it hade more parts to it. So we had to rewrite it to give consistent breaks. We wrote a method to check how many milliseconds had passed since the program started. Further optimizing this it was found that the random function we used was a huge time sink and choosing the values in a predetermined way was more effective in general, it was also noticed that in choosing this numbers we could greatly improve or decrease performance indicating that in choosing starting values can improve results even further.
 
 \subsection{Problems}
-Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code\cite{brentpdf}.
+Finding information on how to implement Pollard rho with Brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of Pollard-Brent at first. But later we found the the paper that Brent himself published. Which resulted in the current iteration of our code\cite{brentpdf}.
 \chapter{Results}
 
 \section{Pollard $\rho$}
