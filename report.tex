@@ -105,12 +105,15 @@ After reading more on Pollard Rho, we found that finding the greatest common div
 
 \section{Pollard Rho with Brent}
 Pollard-Rho is a great algorithm but it suffers from one flaw. It can't handle a cyclic behaviour. With a cyclic behaviour i mean the function f produces repeated results. We can take an example from our own pollard-rho function. When we tried to factor 25 we got this sequence:
-$a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19, a_9=7, a_10=2 ...$
+\begin{center}
+$a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19...$
+\end{center}
 Where a is the value to be investigated with GCD. This sequence will go nowhere and we will have to abort this run.
 
-\subsection{Implementation}
-Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ we is divisable with $\lambda$
+\subsection{Method}
+Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ is divisable with $\lambda$. Which is what we are searching for. Brent realised that if we looked at the comming $2^i$ following numbers after $x_{2^i-1}$ would find the correct cycle length faster. Although it does not differ much for finding factors Brents algorithm finds the correct cycle length directly instead of having to search again like in Floyds. It also has to evaluate the function f one less time.
 
+% This looks horrible... must fix in some way
 \begin{lstlisting}
 f(z, N)
 	return z*z % N
@@ -120,10 +123,11 @@ function pollard_breant(N)
 		x=y;
 		for i:=1 to r do y:=f(y,N), k:= 0
 			while (k>=r) or (G>1)
-		ys := y
-		for i:=0 to min(m, r-k) do
-			y:= f(y); q = (q * |x-y|) mod N
-		end
+				ys := y
+				for i:=0 to min(m, r-k) do
+					y:= f(y)
+					q = (q * |x-y|) mod N
+				end
 			end
 			G := GCD(q,N); k:=k+m
 		end
