@@ -3,11 +3,5 @@ factor
 *run*
 *.out
 rho*
-*.aux
-*.log
-*.toc
-*.dvi
-*.gz
-*.pdf.*
-*test*
+*report*
 .DS*

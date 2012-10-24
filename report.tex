@@ -28,7 +28,7 @@ x \equiv 0 \pmod b
 we have found two factors. The first factor being $x$ and the second being $ \frac{N}{x} $.
 
 \subsubsection{Performance}
-Trial division is not an ideal approach as it is a heavy algorithm. It can, however, find a small factor fast if such a factor exists. Since there is a 50\% chance that a large $N$ is even, and 33\% that it has a factor 3 and so on, it can be a good idea to check for small prime numbers as factors.
+Trial division is not an ideal approach as it is a heavy algortihm \cite{trial}. It can, however, find a small factor fast if such a factor exists. Since there is a 50\% chance that a large $N$ is even, and 33\% that it has a factor 3 and so on, it can be a good idea to check for small prime numbers as factors.
 
 \subsection{Fermat's Factorization Method}
 \subsubsection{Method}
@@ -52,13 +52,13 @@ is a square number. If it is not, try next; $x_1 = x_0 + 1$
 etc. Do the same step, increasing $x$ by one, until a square number $ \Delta x $ is found.
 
 \subsubsection{Performance}
-Fermat's factorization method works well when the resulting factors ara of similar size. If that is not the case, this method is not optimal. However, the method sets base for more advance and better performing algorithms such as the \emph{quadratic sieve} and \emph{general number field sieve}
+Fermat's factorization method works well when the resulting factors are of similar size \cite{mathdep}. If that is not the case, this method is not optimal. However, the method sets base for more advance and better performing algorithms such as the \emph{quadratic sieve} and \emph{general number field sieve}.
 
 \subsection{Pollard Rho}
 The Pollard Rho algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
 
 \subsubsection{Method}
-The idea with the Pollard Rho method is to iterate over the ring $mod(N)$ until falling into a cycle. If $N = pq$, where $q$ and $q$ are two prime factors, we can produce a sequence if numbers that eventually fall into a cycle by iterating a plynomial formula. \\
+The idea with the Pollard Rho method is to iterate over the ring $mod(N)$ until falling into a cycle. If $N = pq$, where $q$ and $q$ are two prime factors, we can produce a sequence if numbers that eventually fall into a cycle by iterating a polynomial formula \cite{pollard}. \\
 Ex 
 \begin{equation}
 x_{n+1} = (x_n^2 + a) \bmod n
@@ -77,12 +77,13 @@ To find the prime factor, one needs to find the greatest common divisor which is
 \begin{equation}
 gcd(|x_{n+1} - x_n|, N) = p
 \end{equation}
+
 \subsubsection{Performance}
-The algorithm is based on the Birthday Problem (section \ref{sec:birthday}) and as was the case in Trial Division, Pollard rho is also fast in finding small factors. A critical part of the Pollard rho method is the detection of a cycle, i.e. if the sequence has become periodic, which is the time to stop the algorithm. In basic Pollard $x_i$ is compared to $x_{2i}$ for all $i$. An alternative method is Brent's factorization method which uses another kind of different cycle detection. The Pollard rho method can be significantly improved by implementing Brent's variant.
+The algorithm is based on the Birthday Problem (section \ref{sec:birthday}) and as was the case in Trial Division, Pollard rho is also fast in finding small factors \cite{pollard}. A critical part of the Pollard rho method is the detection of a cycle, i.e. if the sequence has become periodic, which is the time to stop the algorithm. In basic Pollard $x_i$ is compared to $x_{2i}$ for all $i$. An alternative method is Brent's factorization method which uses another kind of different cycle detection. The Pollard rho method can be significantly improved by implementing Brent's variant.
 
 \subsection{Pollard Rho with Brent}
 Brent published this improvement in 1980\cite{brentpdf} and it bases itself on improving cycle finding.
-\subsubsection{method}
+\subsubsection{Method}
 Pollard-Rho is a great algorithm but it suffers from one flaw. It can't handle a cyclic behaviour. With a cyclic behaviour i mean the function f produces repeated results. We can take an example from our own pollard-rho function. When we tried to factor 25 we got this sequence:
 \begin{center}
 $a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19...$
@@ -91,7 +92,7 @@ Where a is the value to be investigated with GCD. This sequence will go nowhere 
 
 Cycle finding can be implemented with either Floyds "tortoise and hare algorithm" or with Brents version of Floyd. We start by discussing Floyds algorithm. This algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ is divisable with $\lambda$. Which is what we are searching for. Brent realised that if we looked at the comming $2^i$ following numbers after $x_{2^i-1}$ would find the correct cycle length faster. Although it does not differ much for finding factors Brents algorithm finds the correct cycle length directly instead of having to search again like in Floyds. It also has to evaluate the function f one less time.
 
-\subsubsection{performance}
+\subsubsection{Performance}
 This algorithm as said before builds upon floyds. Floyds have a worst case of $O(\lambda + \mu)$. According to Brent his code would work 36\% percent faster for general cycle finding and 24\% for factorisation problems.
 
 \chapter{Approach}
@@ -270,7 +271,7 @@ end
 	http://mathworld.wolfram.com/ChineseRemainderTheorem.html \\
 	Retreived: Oct 2012
 
-\bibitem{chinese}
+\bibitem{pollard}
 	WolframMathWorld.
 	\emph{Pollard rho Factorization Method} \\
 	http:http://mathworld.wolfram.com/PollardRhoFactorizationMethod.html \\
