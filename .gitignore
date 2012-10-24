@@ -6,5 +6,7 @@ rho*
 *.aux
 *.log
 *.toc
+*.dvi
 *.gz
 *.pdf.*
+*test*
