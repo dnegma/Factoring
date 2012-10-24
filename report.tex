@@ -58,13 +58,35 @@ Fermat's factorization method works well when the resulting factors ara of simil
 The Pollard Rho algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
 
 \subsubsection{Method}
+The idea with the Pollard Rho method is to iterate over the ring $mod(N)$ until falling into a cycle. If $N = pq$, where $q$ and $q$ are two prime factors, we can produce a sequence if numbers that eventually fall into a cycle by iterating a plynomial formula. \\
+Ex 
+\begin{equation}
+x_{n+1} = (x_n^2 + a) \bmod n
+\end{equation} \\
+According to the \emph{Chinese remainder theorem} (section \ref{sec:chinese}), we know that each value of $x \bmod n$ corresponds to a value in the pair $x \bmod p$ and $x \bmod q$, since $p$ and $q$ are primes, hence also relatively prime. 
+\\
+This leads to the sequence of numbers $x_n$:s follows the same formula modulo $p$ and $q$:
+\begin{equation}
+	x_{n+1} = ((x_n \bmod p)^2 + a) \bmod p
+	x_{n+1} = ((x_n \bmod q)^2 + a) \bmod q
+\end{equation}
+
+The expected time until the $x_n$:s become cyclic and the expected cycle length are proportinal to $\sqrt{N}$, hence the sequence $(\bmod p)$ will fall into a much shorter cycle with an expected length of $\sqrt{p}$
+\\
+To find the prime factor, one needs to find the greatest common divisor which is equal to $p$.
+\begin{equation}
+gcd(|x_{n+1} - x_n|, N) = p
+\end{equation}
 \subsubsection{Performance}
+The algorithm is based on the Birthday Problem (section \ref{sec:birthday}) and as was the case in Trial Division, Pollard rho is also fast in finding small factors. A critical part of the Pollard rho method is the detection of a cycle, i.e. if the sequence has become periodic, which is the time to stop the algorithm. In basic Pollard $x_i$ is compared to $x_{2i}$ for all $i$. An alternative method is Brent's factorization method which uses another kind of different cycle detection. The Pollard rho method can be significantly improved by implementing Brent's variant.
 
 
 \chapter{Approach}
 We decided to do the programming in C++. We both had limited knowledge in the language and wanted to learn more, as well as handling I/O for Kattis felt like a much easier task in C++ than in Java. 
 
-Our approach for solving the problem was to implement the Pollard Rho algorithm. We did some research on the Quadratic Sieve, but ended up with Pollard Rho mostly because it is an easy algorithm, and at the same time it can perform quite well. We tested it towards Kattis, and tried to optimize it in different ways and in this chapter, we will discuss more into detail what was tested.
+We chose to implement the Pollard Rho algorithm, since it is not too difficult to understand nor to implement. The objective was to start with the very basic Pollard rho and optimize it with different small tweaks, and in the end also imlement Brent's method.
+
+Since Fermat's method seemed to not perform as well, we chose to discard both that and trial division. Some reading was made on the quadratic sieve, but it seemed well too complicated to understand and implement within the time restrictions of this project.
 
 \section{Pollard Rho}
 \subsection{Implementation}
@@ -113,34 +135,7 @@ Where a is the value to be investigated with GCD. This sequence will go nowhere 
 \subsection{Method}
 Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ is divisable with $\lambda$. Which is what we are searching for. Brent realised that if we looked at the comming $2^i$ following numbers after $x_{2^i-1}$ would find the correct cycle length faster. Although it does not differ much for finding factors Brents algorithm finds the correct cycle length directly instead of having to search again like in Floyds. It also has to evaluate the function f one less time.
 
-% This looks horrible... must fix in some way
-\begin{lstlisting}
-f(z, N)
-	return z*z % N
-function pollard_breant(N)
-	y:=x0, r:=1, q:=1;
-	while (G = 1)
-		x=y;
-		for i:=1 to r do y:=f(y,N), k:= 0
-			while (k>=r) or (G>1)
-				ys := y
-				for i:=0 to min(m, r-k) do
-					y:= f(y)
-					q = (q * |x-y|) mod N
-				end
-			end
-			G := GCD(q,N); k:=k+m
-		end
-		r=r*2
-	end
-	if G = N then
-		while g = 1 do
-			ys = f(ys,N); G= GCD(|x-y|, N)
-		end
-	end
-	if G = n then success else fail
-end
-\end{lstlisting}
+
 \subsection{Problems}
 Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code.
 \chapter{Results}
@@ -171,6 +166,56 @@ This gives us $m_1 = a - b$ and $m_2 = a + b $, hence $N = m_1m_2 = (a - b)(a + 
 
 \end{description}
 
+\section{Chinese Remainder Theorem}
+\label{sec:chinese}
+
+\begin{description}
+\item{\bf Theorem:} Let $x$ and $y$ be two relatively prime positive integers, and $a$ and $b$ be any two integers. Then there is an integer $N$ such that 
+\begin{equation}
+N \equiv a \pmod x 
+\end{equation}
+and
+\begin{equation}
+N \equiv b \pmod y
+\end{equation}
+I.e. $N$ is uniqely determined modulo $r,s$.
+
+\end{description}
+
+\section{Birthday Problem}
+\label{sec:birthday}
+The Birthday Problem concerns the probability that some pair in a set of $n$ randomly chosen people will have the same birthday.
+
+\chapter{Code}
+\section{Pollard $\rho$}
+% This looks horrible... must fix in some way
+\begin{lstlisting}
+f(z, N)
+   return z*z % N
+function pollard_breant(N)
+   y:=x0, r:=1, q:=1;
+   while (G = 1)
+      x=y;
+      for i:=1 to r do y:=f(y,N), k:= 0
+         while (k>=r) or (G>1)
+            ys := y
+            for i:=0 to min(m, r-k) do
+               y:= f(y)
+               q = (q * |x-y|) mod N
+            end
+         end
+         G := GCD(q,N); k:=k+m
+      end
+      r=r*2
+   end
+   if G = N then
+      while g = 1 do
+         ys = f(ys,N); G= GCD(|x-y|, N)
+      end
+   end
+   if G = n then success else fail
+end
+\end{lstlisting}
 \begin{thebibliography} {10}
 \bibitem{wolfram}
 	WolframMathWorld.
@@ -188,6 +233,24 @@ This gives us $m_1 = a - b$ and $m_2 = a + b $, hence $N = m_1m_2 = (a - b)(a + 
 	Math \& Statistics Solutions.
 	\emph{Fermat's Factoring Technique} \\
 	http://mathsolutions.50webs.com/fermat.html \\
+	Retreived: Oct 2012
+
+\bibitem{trial}
+	Wikipedia.
+	\emph{Trial Division} \\
+	http://en.wikipedia.org/wiki/Trial\_division \\
+	Retreived: Oct 2012
+
+\bibitem{chinese}
+	WolframMathWorld.
+	\emph{Chinese Remainder Theorem} \\
+	http://mathworld.wolfram.com/ChineseRemainderTheorem.html \\
+	Retreived: Oct 2012
+
+\bibitem{chinese}
+	WolframMathWorld.
+	\emph{Pollard rho Factorization Method} \\
+	http:http://mathworld.wolfram.com/PollardRhoFactorizationMethod.html \\
 	Retreived: Oct 2012
 \end{thebibliography}
 \end{document}

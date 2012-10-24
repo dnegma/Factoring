@@ -10,3 +10,4 @@ rho*
 *.gz
 *.pdf.*
 *test*
+.DS*
