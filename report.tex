@@ -68,10 +68,41 @@ We recognized that since there is a 50/50 chance that the given number is even, 
 After reading more on Pollard Rho, we found that finding the greatest common divisor is quite expensive to do, hence we do not want to do that so often. This made us multiply the value a certain number of times before entering the gcd, hoping to improve the algorithm.
 
 \section{Pollard Rho with Brent}
-By implementing the Brent cycle finding algorithm, we hoped to improve the Pollard Rho algorithm and receive higher scores.
-\subsection{Implementation}
-\subsection{Problems}
+Pollard-Rho is a great algorithm but it suffers from one flaw. It can't handle a cyclic behaviour. With a cyclic behaviour i mean the function f produces repeated results. We can take an example from our own pollard-rho function. When we tried to factor 25 we got this sequence:
+$a_1=1, a_2=22, a_3=16, a_4=2, a_5=19, a_6=7, a_7=2, a_8=19, a_9=7, a_10=2 ...$
+Where a is the value to be investigated with GCD. This sequence will go nowhere and we will have to abort this run.
 
+\subsection{Implementation}
+Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for a sequence S, where S is built upon iterated functions. We can find a loop of length $\lambda$ in given
+
+\begin{lstlisting}
+f(z, N)
+	return z*z % N
+function pollard_breant(N)
+	y:=x0, r:=1, q:=1;
+	while (G = 1)
+		x=y;
+		for i:=1 to r do y:=f(y,N), k:= 0
+			while (k>=r) or (G>1)
+				ys := y
+				for i:=0 to min(m, r-k) do
+					y:= f(y); q = (q * |x-y|) mod N
+				end
+			end
+			G := GCD(q,N); k:=k+m
+		end
+		r=r*2
+	end
+	if G = N then
+		while g = 1 do
+			ys = f(ys,N); G= GCD(|x-y|, N)
+		end
+	end
+	if G = n then success else fail
+end
+\end{lstlisting}
+\subsection{Problems}
+Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code.
 \chapter{Results}
 
 \begin{tabular} {c c c}
