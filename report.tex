@@ -110,9 +110,11 @@ Where a is the value to be investigated with GCD. This sequence will go nowhere 
 \subsection{Method}
 Cycle finding can be implemented with either Floyds \"tortoise and hare algorithm\" or with Brents improvement. We choose to implement Brents but we shall start by discussing Floyds. Floyds algorithm builds upon the idea that for integers $i >= \mu$ and $k >= 0, x_i = x_{i + k\lambda}$, where $\lambda$ is the length of the loop. Especially when $i = k\lambda >= \mu$, it follows that $x_i = x_{2i}$. Thanks to this we can find a length $v$ by letting one value take one step and the other take two steps. This value $v$ is divisable with $\lambda$. Which is what we are searching for. Brent realised that if we looked at the comming $2^i$ following numbers after $x_{2^i-1}$ would find the correct cycle length faster. Although it does not differ much for finding factors Brents algorithm finds the correct cycle length directly instead of having to search again like in Floyds. It also has to evaluate the function f one less time.
 
+\subsection{Implementation}
+When working on this we the old way of cutting the program did not work as it hade more parts to it. So we had to rewrite it to give consistent breaks. We wrote a method to check how many milliseconds had passed since the program started. Further optimizing this it was found that the random function we used was a huge time sink and choosing the values in a predetermined way was more effective in general, it was also noticed that in choosing this numbers we could greatly improve or decrease performance indicating that in choosing starting values can improve results even further.
 
 \subsection{Problems}
-Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code.
+Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code\cite{brentpdf}.
 \chapter{Results}
 
 \begin{tabular} {c c c}
@@ -253,5 +255,11 @@ end
 	\emph{Pollard rho Factorization Method} \\
 	http:http://mathworld.wolfram.com/PollardRhoFactorizationMethod.html \\
 	Retreived: Oct 2012
+
+\bibitem{brentpdf}
+	Brent, Richard P. An Improved Monte Carlo Factorization Algorithm \\
+	http://wwwmaths.anu.edu.au/~brent/pd/rpb051i.pdf \\
+	Published 1980, Bit Numerical Mathematics Volume 20 Number 2
+
 \end{thebibliography}
 \end{document}
