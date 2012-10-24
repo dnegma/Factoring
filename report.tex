@@ -121,6 +121,10 @@ When working on this we the old way of cutting the program did not work as it ha
 Finding information on how to implement pollard-rho with brent proved hard as the general information we found was for the cycle finding algorithm. We did not find any information to the combined version of pollard-brent at first. But later we found the the paper that brent himself published. Which resulted in the current iteration of our code\cite{brentpdf}.
 \chapter{Results}
 
+\section{Pollard $\rho$}
+The basic Pollard $\rho$ algorithm performed acceptably, and received a score of 39 on Kattis Judge. The best performance was achieved by tweaking the value of the cut off limit.
+\begin{table}[ht]
+\caption{Performance of Pollard $\rho$ depending with different cut off limits.}
 \begin{tabular} {c c c}
 Cut off limit 	&	 Score 	& Time [s] \\ \hline
 130		&	12		& 1.2 \\
@@ -129,9 +133,21 @@ Cut off limit 	&	 Score 	& Time [s] \\ \hline
 12500	&	39		&14.20 \\
 
 \end{tabular}
+\end{table}
+
+In addition to the cut off limit, a table with the first 20 prime numbers was implemented. With this used, the score on Kattis increased to 41. The table was used for a trial division of a given number, before entering the Pollard algorithm.
+
+\section{Brent}
+Successfullt implementing Brent's algorithm showed to be much more difficult than expected. However, after a semi successful implementation was made, a score of 51 was received from Kattis.
+
 \chapter{Conclusion}
+Since we had so much trouble implementing a successful Brent algorithm, we did not achieve a high score. But when that implementation finally worked, it gave us a score much higher than the basic pollard without any further optimizations.
+
+By tweaking the pollard algorithm, we could increase the score significantly, hence a legitimate assumption would be that we probably would have been able to optimize the Brent algorithm as well. 
+
+Conclusion; Brent seems to be a very good approach for this project, as it is not too complicated for a masters student, such as yours truly, to understand and fairly easy to implement even though we had some trouble.
 \appendix
-\chapter{Proofs}
+\chapter{Theorems}
 \section{Fermat Difference of Squares}
 \label{sec:fermatproof}
 \begin{description}
