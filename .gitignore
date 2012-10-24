@@ -6,3 +6,5 @@ rho*
 *.aux
 *.log
 *.toc
+*.gz
+*.pdf.*
