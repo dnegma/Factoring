@@ -19,14 +19,19 @@ Factorize integers into prime numbers is considered a difficult problem. There i
 \section{Algorithms}
 As mentioned above, there are some algorithms that solve the problem, of which two of them will be discussed in this section.
 
-\subsection{Naive approach}
+\subsection{Trial Division}
+\subsubsection{Method}
 The most straight forward way of solving this problem is of course to divide a given number \emph{N} with each prime number up to $ \sqrt{N} $. If we find a prime $x$ such that
 \begin{equation}
 x \equiv 0 \pmod b
 \end{equation}
 we have found two factors. The first factor being $x$ and the second being $ \frac{N}{x} $.
 
+\subsubsection{Performance}
+Trial division is not an ideal approach as it is a heavy algortihm. It can, however, find a small factor fast if such a factor exists. Since there is a 50\% chance that a large $N$ is even, and 33\% that it has a factor 3 and so on, it can be a good idea to check for small prime numbers as factors.
+
 \subsection{Fermat's Factorization Method}
+\subsubsection{Method}
 A simple way of improving the naive method is to use the fact that every odd number number $N$ can be represented as a difference of squares (proof in section \ref{sec:fermatproof}.
 \begin{equation}
 N = a^2 - b^2
@@ -36,11 +41,22 @@ If we know $a$ and $b$, $N$ can easily be factored into two factors according to
 N = a^2 - b^2 = (a + b)(a - b)
 \end{equation}
 
-To find such integers, one starts with an $x = \lceil \sqrt{N} \rceil $.
+To find such integers, one starts with an $x_0 = \lceil \sqrt{N} \rceil $. Check if 
+\begin{equation}
+\Delta x_0 = x_0^2 - N
+\end{equation}
+is a square number. If it is not, try next; $x_1 = x_0 + 1$
+\begin{equation}
+\Delta x_1 = x_1^2 - N
+\end{equation}
+etc. Do the same step, increasing $x$ by one, until a square number $ \Delta x $ is found.
 
+\subsubsection{Performance}
+Fermat's factorization method works well when the resulting factors ara of similar size. If that is not the case, this method is not optimal. However, the method sets base for more advance and better performing algorithms such as the \emph{quadratic sieve} and \emph{general number field sieve}
 
 \subsection{Pollard Rho}
 Pollard Rho is a fairly easy algorithm to both understand and implement, and it has an acceptable performance. The algorithm was invented by John Pollard in 1975, and its speciality is to factor composite numbers with small factors.
+
 
 \chapter{Approach}
 We decided to do the programming in C++. We both had limited knowledge in the language and wanted to learn more, as well as handling I/O for Kattis felt like a much easier task in C++ than in Java. 
